@@ -14,9 +14,17 @@ public class BuildingsManager : Singleton<BuildingsManager>
 
     private void Start()
     {
-        idSelected = 0;
+        idSelected = -1;
         selectableBuildings = new List<GameObject>();
         LoadBuildings();
+    }
+
+    private void Update()
+    {
+        if (idSelected < 0)
+            return;
+
+        selectableBuildings[idSelected].transform.position = InputHandler.Instance.hitInfo.point;
     }
 
     private void LoadBuildings()
@@ -39,7 +47,9 @@ public class BuildingsManager : Singleton<BuildingsManager>
     public void SelectBuilding(int selection)
     {
         Debug.Log("HUHU " + selection);
-        selectableBuildings[idSelected].SetActive(false);
+        if(idSelected >= 0)
+            selectableBuildings[idSelected].SetActive(false);
+        
         idSelected = selection;
         selectableBuildings[idSelected].SetActive(true);
     }

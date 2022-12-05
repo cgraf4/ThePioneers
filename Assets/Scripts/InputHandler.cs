@@ -1,16 +1,24 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class InputHandler : MonoBehaviour
+public class InputHandler : Singleton<InputHandler>
 {
     [SerializeField] private Vector3 destination;
     [SerializeField] private LayerMask groundLayers;
     
     private Camera mainCam;
     private RaycastHit[] hitInfos = new RaycastHit[1];
+
+    public RaycastHit hitInfo => hitInfos[0];
     
     private bool inBuildMode;
-    
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     private void Start()
     {
         mainCam = Camera.main;
@@ -20,11 +28,16 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
-        {
-            if(CastRayFromMousePosition())
-                UnitManager.Instance.SetPioneerDestination(destination);
-        }
+        if (EventSystem.current.IsPointerOverGameObject()) 
+            return;
+
+        if (inBuildMode)
+            CastRayFromMousePosition();
+        // if (Input.GetMouseButtonUp(0))
+        // {
+        //     if(CastRayFromMousePosition())
+        //         UnitManager.Instance.SetPioneerDestination(destination);
+        // }
     }
     
     bool CastRayFromMousePosition()
@@ -43,5 +56,10 @@ public class InputHandler : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void SetBuildMode(bool val)
+    {
+        inBuildMode = val;
     }
 }
