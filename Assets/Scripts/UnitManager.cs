@@ -5,7 +5,6 @@ public class UnitManager : Singleton<UnitManager>
 {
     [SerializeField] private List<Pioneer> allPioneers;
 
-
     protected override void Awake()
     {
         base.Awake();

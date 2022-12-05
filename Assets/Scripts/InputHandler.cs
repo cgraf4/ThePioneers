@@ -9,9 +9,12 @@ public class InputHandler : MonoBehaviour
     private Camera mainCam;
     private RaycastHit[] hitInfos = new RaycastHit[1];
     
+    private bool inBuildMode;
+    
     private void Start()
     {
         mainCam = Camera.main;
+        inBuildMode = false;
     }
 
     // Update is called once per frame
