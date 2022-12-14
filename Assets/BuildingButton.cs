@@ -12,8 +12,10 @@ public class BuildingButton : MonoBehaviour
     {
         buildingId = transform.GetSiblingIndex();
         _button = GetComponent<Button>();
+
         _button.onClick.AddListener(
             () => BuildingsManager.Instance.SelectBuilding(buildingId));
+
         _button.onClick.AddListener(
             () => InputHandler.Instance.SetBuildMode(true));
     }

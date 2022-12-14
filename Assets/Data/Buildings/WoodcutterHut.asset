@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WoodcutterHut
   m_EditorClassIdentifier: 
   id: B_WOODCUTTER_HUT
-  prefab: {fileID: 7445556630983337289, guid: 19d0499dcdad8d640932e3893469277f, type: 3}
+  prefab: {fileID: 6408168046961923920, guid: 19d0499dcdad8d640932e3893469277f, type: 3}
   health: 10

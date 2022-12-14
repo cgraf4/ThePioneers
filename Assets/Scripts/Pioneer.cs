@@ -3,25 +3,26 @@ using UnityEngine;
 
 public abstract class Pioneer : MonoBehaviour
 {
-    public enum PioneerStates { Idle, Walking, Working}
+    public enum PioneerStates { Idle, Walking, Working }
 
     private PioneerStates currentState;
-    
+
     protected Pathfinding pathfinding;
-    
-    
+
+
     protected virtual void Start()
     {
-        pathfinding= GetComponent<Pathfinding>();
+        pathfinding = GetComponent<Pathfinding>();
         UnitManager.Instance.Add(this);
 
         currentState = PioneerStates.Idle;
     }
-    
+
     protected virtual void OnDestroy()
     {
         UnitManager.Instance.Remove(this);
     }
+
     public void SetDestination(Vector3 position)
     {
         pathfinding.SetDestination(position);
@@ -49,12 +50,12 @@ public abstract class Pioneer : MonoBehaviour
 
     protected void DoIdle()
     {
-        
+
     }
 
     protected void DoWalking()
     {
-        
+
     }
 
     protected abstract void DoWorking();

@@ -4,10 +4,10 @@
 public class BuildingSO : ScriptableObject
 {
     [SerializeField] private string id;
-    [SerializeField] private GameObject prefab;
+    [SerializeField] private Building prefab;
     [SerializeField] private int health;
     
     public string Id => id;
-    public GameObject Prefab => prefab;
+    public Building Prefab => prefab;
     public int Health => health;
 }

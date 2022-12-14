@@ -6,12 +6,12 @@ public class InputHandler : Singleton<InputHandler>
 {
     [SerializeField] private Vector3 destination;
     [SerializeField] private LayerMask groundLayers;
-    
+
     private Camera mainCam;
     private RaycastHit[] hitInfos = new RaycastHit[1];
 
     public RaycastHit hitInfo => hitInfos[0];
-    
+
     private bool inBuildMode;
 
     protected override void Awake()
@@ -25,21 +25,48 @@ public class InputHandler : Singleton<InputHandler>
         inBuildMode = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) 
+        if (EventSystem.current.IsPointerOverGameObject())
             return;
 
         if (inBuildMode)
+        {
             CastRayFromMousePosition();
-        // if (Input.GetMouseButtonUp(0))
-        // {
-        //     if(CastRayFromMousePosition())
-        //         UnitManager.Instance.SetPioneerDestination(destination);
-        // }
+
+            if (Input.GetMouseButtonDown(1)) // Right Click
+            {
+                BuildingsManager.Instance.SelectBuilding(-1);
+                SetBuildMode(false);
+                return;
+            }
+
+            if (Input.GetMouseButtonUp(0)) // Left Click
+            {
+                BuildingsManager.Instance.PlaceBuilding();
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                BuildingsManager.Instance.Rotate(-1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                BuildingsManager.Instance.Rotate(1);
+            }
+
+            return;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (CastRayFromMousePosition())
+                UnitManager.Instance.SetPioneerDestination(destination);
+        }
     }
-    
+
     bool CastRayFromMousePosition()
     {
         var ray = mainCam.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
@@ -50,8 +77,7 @@ public class InputHandler : Singleton<InputHandler>
         if (hits == 1)
         {
             destination = hitInfos[0].point;
-            Debug.DrawRay(destination, Vector3.up, Color.red, .5f);
-            Debug.Log(destination);
+            Debug.DrawRay(destination, hitInfos[0].normal, Color.red, .5f);
             return true;
         }
 

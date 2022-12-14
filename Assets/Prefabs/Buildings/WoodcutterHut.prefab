@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 4630111434108332831}
   - component: {fileID: 8258345608495595000}
   - component: {fileID: 4750592326644153660}
-  - component: {fileID: 624873850379461924}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &624873850379461924
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2474336015321202936}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2682279463236148662
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +95,7 @@ GameObject:
   - component: {fileID: 1640574113593408437}
   - component: {fileID: 2980730856927727131}
   - component: {fileID: 5702669728359140261}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,8 +179,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.564547, y: 1.5255922, z: 1.1153744}
+  m_Center: {x: 0.00000009536743, y: 0.2627958, z: -0.0027471066}
 --- !u!1 &7445556630983337289
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,7 +190,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7635016862339754649}
-  m_Layer: 0
+  - component: {fileID: 6408168046961923920}
+  m_Layer: 8
   m_Name: WoodcutterHut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,3 +214,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6408168046961923920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7445556630983337289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ec203228304e89a42ff57114e78556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Collider>k__BackingField: {fileID: 5702669728359140261}
