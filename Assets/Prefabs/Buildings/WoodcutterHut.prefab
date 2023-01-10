@@ -191,6 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7635016862339754649}
   - component: {fileID: 6408168046961923920}
+  - component: {fileID: 5252963164439656353}
   m_Layer: 8
   m_Name: WoodcutterHut
   m_TagString: Untagged
@@ -227,3 +228,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Collider>k__BackingField: {fileID: 5702669728359140261}
+--- !u!208 &5252963164439656353
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7445556630983337289}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2.5, y: 2.5, z: 2.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 2.5, z: 0}
+  m_TimeToStationary: 0.5
