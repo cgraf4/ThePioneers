@@ -6,33 +6,28 @@ using UnityEngine.SearchService;
 
 public class BuildingsManager : Singleton<BuildingsManager>
 {
-    [SerializeField] private int rotationStep;
+    [Header("Rotation")]
+    [SerializeField] private float rotationStep;
+    [SerializeField] private float rotationDuration;
+
     [SerializeField] private LayerMask blockingLayer;
     [SerializeField] private Material previewMaterial;
     [SerializeField, Expandable] private BuildingSO[] allBuildings;
     [SerializeField, ReadOnly] private List<Building> selectableBuildings;
     [SerializeField, ReadOnly] private List<Building> placedBuildings;
 
-    [Header("Seasons")]
-    [SerializeField] private int currentSeason;
-    [SerializeField] private SeasonColorBundle[] seasonColors;
-    [SerializeField] private float seasonDuration;
-    [SerializeField] private float seasonChangeDuration;
-    [SerializeField] private Material groundMaterial;
-
     private Dictionary<Building, MeshRenderer[]> meshRenderers; // Caching the meshRenderer in the Building class would also be possible and useful
     // This is just to show another way to handle object-specific data in a managed way
     private int idSelected;
-    private int currentRotation;
+    private float currentRotation;
     private bool canPlace;
+    private Coroutine rotationRoutine;
 
     private void Start()
     {
         idSelected = -1;
         selectableBuildings = new List<Building>();
-        groundMaterial.color = seasonColors[currentSeason].Color;
         LoadBuildings();
-        StartCoroutine(SeasonCycle());
     }
 
     private void Update()
@@ -60,37 +55,6 @@ public class BuildingsManager : Singleton<BuildingsManager>
         {
             meshRenderers[selectableBuildings[idSelected]][i].material.color = CheckForCollisions() ? new Color(1, 0, 0, .5f) : new Color(0, 1, 0, .5f);
         }
-    }
-
-    private IEnumerator SeasonCycle()
-    {
-        float changeTimer = 0f;
-        float percentage = 0f;
-
-        while (true)
-        {
-            yield return new WaitForSeconds(seasonDuration);
-            
-            // wenn mehr als max dann currentSeason = 0;
-            currentSeason = (currentSeason + 1) % 4; // 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
-
-            Color start = seasonColors[currentSeason - 1 < 0 ? 3 : currentSeason - 1].Color;
-            Color end = seasonColors[currentSeason].Color;
-            
-            changeTimer = 0f;
-            
-            while (changeTimer < seasonChangeDuration)
-            {
-                // Percentage = currentTimer / maxDuration
-                changeTimer += Time.deltaTime;
-                percentage = changeTimer / seasonChangeDuration;
-                groundMaterial.color = Color.Lerp(start, end, percentage);
-
-                yield return null;
-            }
-        }
-
-        yield return null;
     }
 
     private void LoadBuildings()
@@ -163,13 +127,37 @@ public class BuildingsManager : Singleton<BuildingsManager>
         InputHandler.Instance.SetBuildMode(false);
     }
 
-    public void Rotate(int direction)
+    public void Rotate(float direction)
     {
         if (idSelected < 0) return;
 
         currentRotation += direction * rotationStep;
 
-        selectableBuildings[idSelected].transform.eulerAngles = new Vector3(selectableBuildings[idSelected].transform.localRotation.x, currentRotation,
-                                                                            selectableBuildings[idSelected].transform.localRotation.z);
+        //selectableBuildings[idSelected].transform.eulerAngles = new Vector3(selectableBuildings[idSelected].transform.localRotation.x, currentRotation,
+        //selectableBuildings[idSelected].transform.localRotation.z);
+
+        if (rotationRoutine != null) StopCoroutine(rotationRoutine);
+        rotationRoutine = StartCoroutine(RotateRoutine());
+    }
+
+    private IEnumerator RotateRoutine()
+    {
+        float timer = 0f;
+        float percentage = 0f;
+        Quaternion start = selectableBuildings[idSelected].transform.rotation;
+        Quaternion end = Quaternion.Euler(new Vector3(selectableBuildings[idSelected].transform.localRotation.x, currentRotation,
+                                                                            selectableBuildings[idSelected].transform.localRotation.z));
+
+        while (timer < rotationDuration)
+        {
+            timer += Time.deltaTime;
+            percentage = timer / rotationDuration;
+
+            selectableBuildings[idSelected].transform.rotation = Quaternion.Slerp(start, end, percentage);
+
+            yield return null;
+        }
+
+        rotationRoutine = null;
     }
 }

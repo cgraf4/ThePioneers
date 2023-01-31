@@ -16,3 +16,11 @@ public enum Season
     Fall,
     Winter,
 }
+
+public enum Ressource
+{
+    Tree,
+    Iron,
+    Copper,
+    Stone
+}

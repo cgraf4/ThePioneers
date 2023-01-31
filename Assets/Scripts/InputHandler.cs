@@ -47,15 +47,19 @@ public class InputHandler : Singleton<InputHandler>
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKey(KeyCode.Q))
             {
                 BuildingsManager.Instance.Rotate(-1);
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKey(KeyCode.E))
             {
                 BuildingsManager.Instance.Rotate(1);
             }
+            //if (Input.GetAxis("Mouse ScrollWheel") != 0)
+            //{
+            //    BuildingsManager.Instance.Rotate(Input.mouseScrollDelta.y);
+            //}
 
             return;
         }
