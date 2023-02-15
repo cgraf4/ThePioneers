@@ -1,16 +1,18 @@
 using System;
+using System.Linq;
+using System.Net.Security;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class InputHandler : Singleton<InputHandler>
 {
     [SerializeField] private Vector3 destination;
-    [SerializeField] private LayerMask groundLayers;
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private LayerMask groundLayer;
 
     private Camera mainCam;
-    private RaycastHit[] hitInfos = new RaycastHit[1];
-
-    public RaycastHit hitInfo => hitInfos[0];
+    public RaycastHit GroundHit;
 
     private bool inBuildMode;
 
@@ -32,7 +34,7 @@ public class InputHandler : Singleton<InputHandler>
 
         if (inBuildMode)
         {
-            CastRayFromMousePosition();
+            CastRayFromMousePosition(out RessourceSource source);
 
             if (Input.GetMouseButtonDown(1)) // Right Click
             {
@@ -66,25 +68,57 @@ public class InputHandler : Singleton<InputHandler>
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (CastRayFromMousePosition())
-                UnitManager.Instance.SetPioneerDestination(destination);
+            if (CastRayFromMousePosition(out RessourceSource source))
+            {
+                if (source == null)
+                {
+                    UnitManager.Instance.SetPioneerDestination(destination);
+                }
+                else if (source != null)
+                {
+                    UnitManager.Instance.HarvestRessource(source);
+                }
+            }
         }
     }
 
-    bool CastRayFromMousePosition()
+    bool CastRayFromMousePosition(out RessourceSource source)
     {
+        source = null;
         var ray = mainCam.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
         Debug.DrawRay(ray.origin, ray.direction, Color.blue, .5f);
 
-        var hits = Physics.RaycastNonAlloc(ray, hitInfos, Mathf.Infinity, groundLayers);
+        RaycastHit[] rayHits = Physics.RaycastAll(ray, Mathf.Infinity, targetLayers);
 
-        if (hits == 1)
+        if (rayHits.Length > 0) // Wenn wir etwas hitten müssen wir prüfen, was genau denn da ist und können priorisieren
         {
-            destination = hitInfos[0].point;
-            Debug.DrawRay(destination, hitInfos[0].normal, Color.red, .5f);
-            return true;
+            for (int i = 0; i < rayHits.Length; i++)
+            {
+                if (rayHits[i].collider.gameObject.TryGetComponent(out RessourceSource hitSource))
+                {
+                    source = hitSource;
+                    return true;
+                }
+            }
+
+            /*
+             *  Hier könnten Ihre weiteren Prios/Prüfungen stehen!
+             */
+
+            // Wenn die Prioritäten nicht erfüllt sind, dann iterieren wir und suchen nach Ground (niedrigste prio)
+            for (int i = 0; i < rayHits.Length; i++)
+            {
+                if (groundLayer.Contains(rayHits[i].collider.gameObject.layer))
+                {
+                    destination = rayHits[i].point;
+                    GroundHit = rayHits[i];
+                    Debug.DrawRay(destination, rayHits[i].normal, Color.red, .5f);
+                    return true;
+                }
+            }
         }
 
+        // Nix getroffen dann false
         return false;
     }
 

@@ -9,28 +9,29 @@ public class RessourceSpawner : MonoBehaviour
     [SerializeField] private GameObject groundPlane;
     [SerializeField] private RessourcePrefabBundle[] allRessources;
 
-    private Dictionary<Ressource, GameObject> ressourceDictionary;
+    private Dictionary<RessourceType, GameObject> ressourceDictionary;
 
     private int size;
     private Vector3 middlePoint = new Vector3(-500, 0, 0);
 
     void Start()
     {
-        ressourceDictionary = new Dictionary<Ressource, GameObject>();
+        ressourceDictionary = new Dictionary<RessourceType, GameObject>();
         for (int i = 0; i < allRessources.Length; i++)
         {
             ressourceDictionary.Add(allRessources[i].Type, allRessources[i].Prefab);
         }
 
         size = 10 * (int)groundPlane.transform.localScale.x;
-        SpawnRessources(Ressource.Iron);
+        SpawnRessources(RessourceType.Iron);
     }
 
-    private void SpawnRessources(Ressource ressource)
+    private void SpawnRessources(RessourceType ressource)
     {
         for (int i = 0; i < spawnAmount; i++)
         {
-            Vector3 position = middlePoint + new Vector3(Random.Range(-size * 0.5f, size * 0.5f),
+            Vector3 position = middlePoint + 
+                new Vector3(Random.Range(-size * 0.5f, size * 0.5f),
                 0,
                 Random.Range(-size * 0.5f, size * 0.5f));
                 

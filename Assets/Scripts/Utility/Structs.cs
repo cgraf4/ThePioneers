@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,6 +10,6 @@ public struct SeasonColorBundle
 [System.Serializable]
 public struct RessourcePrefabBundle
 {
-    public Ressource Type;
+    public RessourceType Type;
     public GameObject Prefab;
 }

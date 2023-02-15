@@ -33,4 +33,8 @@ public class UnitManager : Singleton<UnitManager>
         }
     }
 
+    public void HarvestRessource(RessourceSource source)
+    {
+        Debug.Log("BUDDELN");
+    }
 }

@@ -2,7 +2,6 @@ using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SearchService;
 
 public class BuildingsManager : Singleton<BuildingsManager>
 {
@@ -17,7 +16,7 @@ public class BuildingsManager : Singleton<BuildingsManager>
     [SerializeField, ReadOnly] private List<Building> placedBuildings;
 
     private Dictionary<Building, MeshRenderer[]> meshRenderers; // Caching the meshRenderer in the Building class would also be possible and useful
-    // This is just to show another way to handle object-specific data in a managed way
+                                                                // This is just to show another way to handle object-specific data in a managed way
     private int idSelected;
     private float currentRotation;
     private bool canPlace;
@@ -37,9 +36,9 @@ public class BuildingsManager : Singleton<BuildingsManager>
         Vector3 test = new Vector3(5, 5, 5);
         test.RemoveVectorComponentExtended(VectorValue.X);
 
-        selectableBuildings[idSelected].transform.position = InputHandler.Instance.hitInfo.point;
+        selectableBuildings[idSelected].transform.position = InputHandler.Instance.GroundHit.point;
         selectableBuildings[idSelected].transform.rotation =
-                Helper.SetUpAndYAxisRotation(selectableBuildings[idSelected].transform.forward, InputHandler.Instance.hitInfo.normal);
+                Helper.SetUpAndYAxisRotation(selectableBuildings[idSelected].transform.forward, InputHandler.Instance.GroundHit.normal);
 
         //if (CheckForCollisions())
         //{
@@ -63,11 +62,11 @@ public class BuildingsManager : Singleton<BuildingsManager>
 
         foreach (var building in allBuildings)
         {
-            var b = Instantiate(building.Prefab, new Vector3(0, -50, 0), Quaternion.identity, transform);
+            Building b = Instantiate(building.Prefab, new Vector3(0, -50, 0), Quaternion.identity, transform);
 
-            var meshes = b.transform.GetComponentsInChildren<MeshRenderer>();
+            MeshRenderer[] meshes = b.transform.GetComponentsInChildren<MeshRenderer>();
 
-            foreach (var meshRenderer in meshes)
+            foreach (MeshRenderer meshRenderer in meshes)
             {
                 meshRenderer.material = previewMaterial;
             }
@@ -83,7 +82,7 @@ public class BuildingsManager : Singleton<BuildingsManager>
     {
         Bounds currentBounds = selectableBuildings[idSelected].Collider.bounds;
 
-        if (Physics.OverlapBox(currentBounds.center, currentBounds.extents, Quaternion.identity, blockingLayer).Length > 1)
+        if (Physics.OverlapBox(currentBounds.center, currentBounds.extents, selectableBuildings[idSelected].transform.rotation, blockingLayer).Length > 1)
         {
             canPlace = false;
             return true;
@@ -108,7 +107,7 @@ public class BuildingsManager : Singleton<BuildingsManager>
     {
         if (!canPlace) return;
 
-        var spawnedBuilding = Instantiate(allBuildings[idSelected].Prefab, InputHandler.Instance.hitInfo.point, Quaternion.identity, transform);
+        var spawnedBuilding = Instantiate(allBuildings[idSelected].Prefab, InputHandler.Instance.GroundHit.point, Quaternion.identity, transform);
 
         // Potential rotation iprovement: 
         // Cast rays down from each corner of the building (we already have bounds)
@@ -119,7 +118,7 @@ public class BuildingsManager : Singleton<BuildingsManager>
         placedBuildings.Add(spawnedBuilding);
 
         spawnedBuilding.transform.localRotation = Quaternion.Euler(spawnedBuilding.transform.rotation.x, currentRotation, spawnedBuilding.transform.rotation.z);
-        spawnedBuilding.transform.rotation = Helper.SetUpAndYAxisRotation(spawnedBuilding.transform.forward, InputHandler.Instance.hitInfo.normal);
+        spawnedBuilding.transform.rotation = Helper.SetUpAndYAxisRotation(spawnedBuilding.transform.forward, InputHandler.Instance.GroundHit.normal);
 
         SelectBuilding(-1);
         currentRotation = 0;
@@ -133,9 +132,6 @@ public class BuildingsManager : Singleton<BuildingsManager>
 
         currentRotation += direction * rotationStep;
 
-        //selectableBuildings[idSelected].transform.eulerAngles = new Vector3(selectableBuildings[idSelected].transform.localRotation.x, currentRotation,
-        //selectableBuildings[idSelected].transform.localRotation.z);
-
         if (rotationRoutine != null) StopCoroutine(rotationRoutine);
         rotationRoutine = StartCoroutine(RotateRoutine());
     }
@@ -145,8 +141,8 @@ public class BuildingsManager : Singleton<BuildingsManager>
         float timer = 0f;
         float percentage = 0f;
         Quaternion start = selectableBuildings[idSelected].transform.rotation;
-        Quaternion end = Quaternion.Euler(new Vector3(selectableBuildings[idSelected].transform.localRotation.x, currentRotation,
-                                                                            selectableBuildings[idSelected].transform.localRotation.z));
+        Quaternion end = Quaternion.Euler(new Vector3(selectableBuildings[idSelected].transform.rotation.x, currentRotation,
+                                                                            selectableBuildings[idSelected].transform.rotation.z));
 
         while (timer < rotationDuration)
         {

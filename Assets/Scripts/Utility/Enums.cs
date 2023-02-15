@@ -17,7 +17,7 @@ public enum Season
     Winter,
 }
 
-public enum Ressource
+public enum RessourceType
 {
     Tree,
     Iron,

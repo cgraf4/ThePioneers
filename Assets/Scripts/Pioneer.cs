@@ -8,6 +8,7 @@ public abstract class Pioneer : MonoBehaviour
     private PioneerStates currentState;
 
     protected Pathfinding pathfinding;
+    protected Animator animator;
 
 
     protected virtual void Start()
@@ -46,6 +47,11 @@ public abstract class Pioneer : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    public void PlayAnimation(string trigger)
+    {
+        animator.SetTrigger(trigger);
     }
 
     protected void DoIdle()

@@ -63,4 +63,10 @@ public static class Helper
                 throw new ArgumentOutOfRangeException(nameof(toRemove), toRemove, null);
         }
     }
+
+    // Check if the target layer mask contains the given layer
+    public static bool Contains(this LayerMask target, LayerMask layer)
+    {
+        return target == (target | (1 << layer));
+    }
 }
